@@ -1,12 +1,12 @@
 """
 COMP 163 - Project 3: Quest Chronicles
-Inventory System Module - Enhanced Version
+Inventory System Module - Fully Integrated Version
 
 Name: [Your Name Here]
 
-AI Usage: [Document any AI assistance used]
-
-This module handles inventory management, item usage, equipment, and shop operations.
+AI Usage: Free Use (with explanation)
+This module was updated to fully integrate equipment, consumables, and shop functionality
+with the quest system and main game menu.
 """
 
 from custom_exceptions import (
@@ -58,48 +58,71 @@ def use_item(character, item_id, item_data):
         raise ItemNotFoundError(f"Item '{item_id}' not found in inventory.")
     if item_data['type'] != 'consumable':
         raise InvalidItemTypeError(f"Item '{item_id}' is not a consumable.")
-    stat_name, value = parse_item_effect(item_data['effect'])
-    apply_stat_effect(character, stat_name, value)
+    effects = parse_effect_string(item_data['effect'])
+    for stat, value in effects.items():
+        apply_stat_effect(character, stat, value)
     remove_item_from_inventory(character, item_id)
-    item_name = item_data.get('name', item_id)  # fallback if 'name' missing
-    return f"Used {item_name}, {stat_name} increased by {value}."
+    item_name = item_data.get('name', item_id)
+    return f"Used {item_name}. Effects applied: {effects}"
 
 # -------------------------
 # EQUIPMENT
 # -------------------------
 
-def equip_item(character, item_id, item_data, item_data_dict, slot):
-    if item_id not in character['inventory']:
-        raise ItemNotFoundError(f"Item '{item_id}' not found in inventory.")
-    if item_data['type'] != slot:
-        raise InvalidItemTypeError(f"Item '{item_id}' is not a {slot}.")
-    equipped_slot = f"equipped_{slot}"
-    if character.get(equipped_slot):
-        old_id = character[equipped_slot]
-        old_data = item_data_dict[old_id]
-        stat_name, value = parse_item_effect(old_data['effect'])
-        apply_stat_effect(character, stat_name, -value)
-        add_item_to_inventory(character, old_id)
-    stat_name, value = parse_item_effect(item_data['effect'])
-    apply_stat_effect(character, stat_name, value)
-    character[equipped_slot] = item_id
+def equip_weapon(character, item_id, item_data_dict):
+    """Equip a weapon and apply its effects"""
+    if item_id not in character.get('inventory', []):
+        raise ItemNotFoundError(f"Weapon '{item_id}' not in inventory.")
+    item_data = item_data_dict[item_id]
+    if item_data.get('type') != 'weapon':
+        raise InvalidItemTypeError(f"Item '{item_id}' is not a weapon.")
+
+    # Unequip old weapon
+    old_weapon_id = character.get('equipped_weapon')
+    if old_weapon_id:
+        old_weapon_data = item_data_dict[old_weapon_id]
+        for stat, value in parse_effect_string(old_weapon_data.get('effect', '')).items():
+            apply_stat_effect(character, stat, -value)
+        add_item_to_inventory(character, old_weapon_id)
+
+    # Equip new weapon
+    character['equipped_weapon'] = item_id
+    for stat, value in parse_effect_string(item_data.get('effect', '')).items():
+        apply_stat_effect(character, stat, value)
     remove_item_from_inventory(character, item_id)
     return True
 
-def equip_weapon(character, item_id, item_data, item_data_dict):
-    return equip_item(character, item_id, item_data, item_data_dict, slot='weapon')
+def equip_armor(character, item_id, item_data_dict):
+    """Equip armor and apply its effects"""
+    if item_id not in character.get('inventory', []):
+        raise ItemNotFoundError(f"Armor '{item_id}' not in inventory.")
+    item_data = item_data_dict[item_id]
+    if item_data.get('type') != 'armor':
+        raise InvalidItemTypeError(f"Item '{item_id}' is not armor.")
 
-def equip_armor(character, item_id, item_data, item_data_dict):
-    return equip_item(character, item_id, item_data, item_data_dict, slot='armor')
+    # Unequip old armor
+    old_armor_id = character.get('equipped_armor')
+    if old_armor_id:
+        old_armor_data = item_data_dict[old_armor_id]
+        for stat, value in parse_effect_string(old_armor_data.get('effect', '')).items():
+            apply_stat_effect(character, stat, -value)
+        add_item_to_inventory(character, old_armor_id)
+
+    # Equip new armor
+    character['equipped_armor'] = item_id
+    for stat, value in parse_effect_string(item_data.get('effect', '')).items():
+        apply_stat_effect(character, stat, value)
+    remove_item_from_inventory(character, item_id)
+    return True
 
 def unequip_item(character, item_data_dict, slot):
     equipped_slot = f"equipped_{slot}"
-    if not character.get(equipped_slot):
+    item_id = character.get(equipped_slot)
+    if not item_id:
         return None
-    item_id = character[equipped_slot]
     item_data = item_data_dict[item_id]
-    stat_name, value = parse_item_effect(item_data['effect'])
-    apply_stat_effect(character, stat_name, -value)
+    for stat, value in parse_effect_string(item_data['effect']).items():
+        apply_stat_effect(character, stat, -value)
     add_item_to_inventory(character, item_id)
     character[equipped_slot] = None
     return item_id
@@ -129,15 +152,22 @@ def sell_item(character, item_id, item_data):
 # HELPERS
 # -------------------------
 
-def parse_item_effect(effect_string):
-    stat_name, value_str = effect_string.split(":")
-    return stat_name.strip(), int(value_str.strip())
+def parse_effect_string(effect_str):
+    """Convert 'stat: value, stat2: value2' to dict"""
+    effects = {}
+    if not effect_str:
+        return effects
+    for pair in effect_str.split(','):
+        if ':' in pair:
+            stat, value = pair.split(':', 1)
+            effects[stat.strip()] = int(value.strip())
+    return effects
 
-def apply_stat_effect(character, stat_name, value):
-    if stat_name not in character:
-        character[stat_name] = 0
-    character[stat_name] += value
-    if stat_name == 'health':
+def apply_stat_effect(character, stat, value):
+    if stat not in character:
+        character[stat] = 0
+    character[stat] += value
+    if stat == 'health':
         character['health'] = min(max(character['health'], 0), character.get('max_health', character['health']))
 
 def display_inventory(character, item_data_dict):
