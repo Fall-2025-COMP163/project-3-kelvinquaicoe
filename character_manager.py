@@ -81,7 +81,7 @@ def create_character(name, character_class):
         strength = 10
         magic = 15
 
-    #return character dictionary
+    # --- return character dictionary ---
     return {
         "name": name,
         "class": character_class,
@@ -119,14 +119,11 @@ def save_character(character, save_directory="data/save_games"):
     COMPLETED_QUESTS: quest1,quest2
     
     Returns: True if successful
-    Raises: PermissionError, IOError (let them propagate or handle)
+    Raises: PermissionError, IOError (let them propagate)
     """
-    # TODO: Implement save functionality
-    # Create save_directory if it doesn't exist
-    # Handle any file I/O errors appropriately
-    # Lists should be saved as comma-separated values
+    # Ensure save directory exists
     if not os.path.isdir(save_directory):
-        raise FileNotFoundError(f"Save directory '{save_directory}' does not exist.")
+        os.makedirs(save_directory)
 
     file_path = os.path.join(save_directory, f"{character['name']}_save.txt")
 
@@ -136,12 +133,10 @@ def save_character(character, save_directory="data/save_games"):
                 if isinstance(value, list):
                     value = ",".join(value)
                 file.write(f"{key.upper()}: {value}\n")
-
         return True
-
     except Exception as e:
         raise e
-    
+
 
 def load_character(character_name, save_directory="data/save_games"):
     """
@@ -157,35 +152,40 @@ def load_character(character_name, save_directory="data/save_games"):
         SaveFileCorruptedError if file exists but can't be read
         InvalidSaveDataError if data format is wrong
     """
-    # TODO: Implement load functionality
-    # Check if file exists → CharacterNotFoundError
-    # Try to read file → SaveFileCorruptedError
-    # Validate data format → InvalidSaveDataError
-    # Parse comma-separated lists back into Python lists
-    if not os.path.exists(save_directory):
-        raise CharacterNotFoundError(f"Character '{character_name}' does not exist.")
     file_path = os.path.join(save_directory, f"{character_name}_save.txt")
     if not os.path.exists(file_path):
         raise CharacterNotFoundError(f"Character '{character_name}' does not exist.")
-    character = {}
+    
+    # Step 1: Read file safely
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             lines = file.readlines()
-            for line in lines:
-                key, value = line.strip().split(": ", 1)
-                if key in ["INVENTORY", "ACTIVE_QUESTS", "COMPLETED_QUESTS"]:
-                    character[key.lower()] = value.split(",") if value else []
-                elif key in ["LEVEL", "HEALTH", "MAX_HEALTH", "STRENGTH", "MAGIC", "EXPERIENCE", "GOLD"]:
-                    character[key.lower()] = int(value)
-                else:
-                    character[key.lower()] = value
     except Exception as e:
         raise SaveFileCorruptedError(f"Could not read save file for '{character_name}'.") from e
-    # Validate character data
-    try:
-        validate_character_data(character)
-    except InvalidSaveDataError as e:
-        raise InvalidSaveDataError(f"Invalid save data for '{character_name}'.") from e
+
+    
+    # Step 2: Parse file content
+    character = {}
+    for line in lines:
+        if ": " not in line:
+            raise SaveFileCorruptedError(f"Malformed line in save file: {line}")
+        key, value = line.strip().split(": ", 1)
+        key_lower = key.lower()
+        value = value.strip()
+
+        if key in ["INVENTORY", "ACTIVE_QUESTS", "COMPLETED_QUESTS"]:
+            character[key_lower] = [v.strip() for v in value.split(",")] if value else []
+        elif key in ["LEVEL", "HEALTH", "MAX_HEALTH", "STRENGTH", "MAGIC", "EXPERIENCE", "GOLD"]:
+            try:
+                character[key_lower] = int(value)
+            except ValueError:
+                raise InvalidSaveDataError(f"Invalid numeric value for {key_lower}: {value}")
+        else:
+            character[key_lower] = value
+
+    # Step 3: Validate all required fields and types
+    validate_character_data(character)
+
     return character
 
 
@@ -391,7 +391,7 @@ if __name__ == "__main__":
         print("Character saved successfully")
     except Exception as e:
         print(f"Save error: {e}")
- 
+
     # Test loading
     # try:
     #     loaded = load_character("TestHero")
