@@ -1,14 +1,14 @@
 """
 COMP 163 - Project 3: Quest Chronicles
-Inventory System Module - Starter Code
+Inventory System Module - Enhanced Version
 
 Name: [Your Name Here]
 
 AI Usage: [Document any AI assistance used]
 
-This module handles inventory management, item usage, and equipment.
+This module handles inventory management, item usage, equipment, and shop operations.
 """
-# inventory_system.py
+
 from custom_exceptions import (
     InventoryFullError,
     ItemNotFoundError,
@@ -61,7 +61,8 @@ def use_item(character, item_id, item_data):
     stat_name, value = parse_item_effect(item_data['effect'])
     apply_stat_effect(character, stat_name, value)
     remove_item_from_inventory(character, item_id)
-    return f"Used {item_data['name']}, {stat_name} increased by {value}."
+    item_name = item_data.get('name', item_id)  # fallback if 'name' missing
+    return f"Used {item_name}, {stat_name} increased by {value}."
 
 # -------------------------
 # EQUIPMENT
@@ -143,8 +144,6 @@ def display_inventory(character, item_data_dict):
     inventory_count = Counter(character['inventory'])
     print("Inventory:")
     for item_id, count in inventory_count.items():
-        item_name = item_data_dict[item_id]['name'] if item_id in item_data_dict else "Unknown"
-        item_type = item_data_dict[item_id]['type'] if item_id in item_data_dict else "Unknown"
+        item_name = item_data_dict.get(item_id, {}).get('name', item_id)
+        item_type = item_data_dict.get(item_id, {}).get('type', 'Unknown')
         print(f"- {item_name} (Type: {item_type}) x{count}")
-
-
