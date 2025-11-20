@@ -151,9 +151,46 @@ def display_inventory(character, item_data_dict):
 # -------------------------
 
 if __name__ == "__main__":
-    test_char = {'inventory': [], 'gold': 100, 'health': 80, 'max_health': 80}
-    test_item = {'item_id': 'health_potion', 'type': 'consumable', 'effect': 'health:20', 'name': 'Health Potion'}
+    print("=== INVENTORY SYSTEM TEST ===")
     
-    # Add & use
-    add_item_to_inventory(test_char, 'health_potion')
-    print(use_item(test_char, 'health_potion', test_item))
+    # Test adding items
+    # test_char = {'inventory': [], 'gold': 100, 'health': 80, 'max_health': 80}
+    # 
+    test_char = {'inventory': [], 'gold': 100, 'health': 80, 'max_health': 80}
+    
+    # try:
+    #     add_item_to_inventory(test_char, "health_potion")
+    #     print(f"Inventory: {test_char['inventory']}")
+    # except InventoryFullError:
+    #     print("Inventory is full!")
+    try:
+        add_item_to_inventory(test_char, "health_potion")
+        print(f"Inventory: {test_char['inventory']}")
+    except InventoryFullError:
+        print("Inventory is full!")
+    
+    # Test using items
+    # test_item = {
+    #     'item_id': 'health_potion',
+    #     'type': 'consumable',
+    #     'effect': 'health:20'
+    # }
+    test_item = {
+        'item_id': 'health_potion',
+        'type': 'consumable',
+        'effect': 'health:20'
+    }
+    
+    # 
+    # try:
+    #     result = use_item(test_char, "health_potion", test_item)
+    #     print(result)
+    # except ItemNotFoundError:
+    #     print("Item not found")
+    try:
+        result = use_item(test_char, "health_potion", test_item)
+        print(result)
+    except ItemNotFoundError:
+        print("Item not found")
+
+
