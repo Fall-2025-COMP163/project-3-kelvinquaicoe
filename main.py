@@ -254,14 +254,46 @@ def view_inventory():
         print("No character loaded.")
         return
 
-    print("\nInventory:")
-    inventory = current_character.get('inventory', [])
-    if inventory:
-        for item_id in inventory:
-            item = all_items.get(item_id, {'name': 'Unknown Item'})
-            print(f"  - {item.get('name')} (ID: {item_id})")
-    else:
-        print("  Inventory is empty.")
+    from inventory_system import use_item, equip_weapon, equip_armor, display_inventory
+
+    display_inventory(current_character, all_items)
+
+    while True:
+        action = input("\nActions: Use (u), Equip Weapon (w), Equip Armor (a), Back (b): ").lower()
+        if action == 'u':
+            item_id = input("Enter item ID to use: ").strip()
+            if item_id in all_items:
+                try:
+                    result = use_item(current_character, item_id, all_items[item_id])
+                    print(result)
+                except Exception as e:
+                    print(f"Cannot use item: {e}")
+            else:
+                print("Invalid item ID.")
+        elif action == 'w':
+            item_id = input("Enter weapon ID to equip: ").strip()
+            if item_id in all_items:
+                try:
+                    equip_weapon(current_character, item_id, all_items)
+                    print(f"Equipped weapon: {all_items[item_id]['name']}")
+                except Exception as e:
+                    print(f"Cannot equip weapon: {e}")
+            else:
+                print("Invalid item ID.")
+        elif action == 'a':
+            item_id = input("Enter armor ID to equip: ").strip()
+            if item_id in all_items:
+                try:
+                    equip_armor(current_character, item_id, all_items)
+                    print(f"Equipped armor: {all_items[item_id]['name']}")
+                except Exception as e:
+                    print(f"Cannot equip armor: {e}")
+            else:
+                print("Invalid item ID.")
+        elif action == 'b':
+            break
+        else:
+            print("Invalid action. Enter u, w, a, or b.")
 
 def quest_menu():
     """Quest management menu"""
