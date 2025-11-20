@@ -394,47 +394,42 @@ if __name__ == "__main__":
     print("=== COMBAT SYSTEM TEST ===")
     
     # Test enemy creation
-    # try:
-    #     goblin = create_enemy("goblin")
-    #     print(f"Created {goblin['name']}")
-    # except InvalidTargetError as e:
-    #     print(f"Invalid enemy: {e}")
     try:
         goblin = create_enemy("goblin")
         print(f"Created {goblin['name']}")
     except InvalidTargetError as e:
         print(f"Invalid enemy: {e}")
 
-    
-    # Test battle
-    # test_char = {
-    #     'name': 'Hero',
-    #     'class': 'Warrior',
-    #     'health': 120,
-    #     'max_health': 120,
-    #     'strength': 15,
-    #     'magic': 5
-    # }
-    #
-    # battle = SimpleBattle(test_char, goblin)
-    # try:
-    #     result = battle.start_battle()
-    #     print(f"Battle result: {result}")
-    # except CharacterDeadError:
-    #     print("Character is dead!")
+    # Test battle with automated player actions
     test_char = {
         'name': 'Hero',
         'class': 'Warrior',
+        'level': 1,
         'health': 120,
         'max_health': 120,
         'strength': 15,
-        'magic': 5
+        'magic': 5,
+        'experience': 0,
+        'gold': 100,
+        'inventory': [],
+        'active_quests': [],
+        'completed_quests': []
     }
-    
+
+    # Patch SimpleBattle.player_turn for automated testing
+    def auto_player_turn(self):
+        """Automated player turn: always basic attack"""
+        if not self.combat_active:
+            raise CombatNotActiveError("Cannot take turn, combat is not active.")
+        damage = self.calculate_damage(self.character, self.enemy)
+        self.apply_damage(self.enemy, damage)
+        display_battle_log(f"{self.character['name']} attacks {self.enemy['name']} for {damage} damage!")
+
+    SimpleBattle.player_turn = auto_player_turn
+
     battle = SimpleBattle(test_char, goblin)
     try:
         result = battle.start_battle()
-        print(f"Battle result: {result}")
+        print(f"\nBattle result: {result}")
     except CharacterDeadError:
         print("Character is dead!")
-
