@@ -42,54 +42,45 @@ def create_character(name, character_class):
 
 
 def save_character(character, save_directory="data/save_games"):
-    if not os.path.isdir(save_directory):
-        os.makedirs(save_directory)
-
+    import os
+    os.makedirs(save_directory, exist_ok=True)
     file_path = os.path.join(save_directory, f"{character['name']}_save.txt")
-
-    with open(file_path, "w") as file:
-        for key, value in character.items():
-            if isinstance(value, list):
-                value = ",".join(value)
-            file.write(f"{key.upper()}: {value}\n")
-    return True
-
+    try:
+        with open(file_path, "w") as f:
+            for key, value in character.items():
+                f.write(f"{key}: {value}\n")
+        return True
+    except Exception as e:
+        return False
 
 def load_character(character_name, save_directory="data/save_games"):
+    import os
     file_path = os.path.join(save_directory, f"{character_name}_save.txt")
-    
     if not os.path.exists(file_path):
         raise CharacterNotFoundError(f"Character '{character_name}' does not exist.")
-    
-    try:
-        with open(file_path, "r") as file:
-            lines = file.readlines()
-    except Exception as e:
-        raise SaveFileCorruptedError(f"Could not read save file for '{character_name}'.") from e
 
     character = {}
-    for line in lines:
-        if ": " not in line:
-            raise SaveFileCorruptedError(f"Malformed line in save file: {line}")
-
-        key, value = line.strip().split(": ", 1)
-        key = key.lower()
-        value = value.strip()
-
-        if key in ["inventory", "active_quests", "completed_quests"]:
-            character[key] = [v for v in value.split(",") if v] if value else []
-        elif key in ["level", "health", "max_health", "strength", "magic", "experience", "gold"]:
-            try:
-                character[key] = int(value)
-            except ValueError:
-                raise InvalidSaveDataError(f"Invalid numeric value for {key}: {value}")
-        else:
+    try:
+        with open(file_path, "r") as f:
+            lines = f.readlines()
+        for line in lines:
+            line = line.strip()
+            if not line:  # skip empty lines
+                continue
+            if ": " not in line:
+                raise SaveFileCorruptedError(f"Malformed line in save file: {line}")
+            key, value = line.split(": ", 1)
+            # Convert numeric fields back to int if possible
+            if value.isdigit():
+                value = int(value)
+            elif value.startswith("[") and value.endswith("]"):
+                # Attempt to eval lists safely
+                value = eval(value)
             character[key] = value
-
-    validate_character_data(character)
-    return character
-
-
+        return character
+    except Exception as e:
+        raise SaveFileCorruptedError(f"Could not read save file for '{character_name}'") from e
+        
 def list_saved_characters(save_directory="data/save_games"):
     if not os.path.exists(save_directory):
         return []
