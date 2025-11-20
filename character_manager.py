@@ -22,19 +22,6 @@ from custom_exceptions import (
 # CHARACTER MANAGEMENT FUNCTIONS
 # ============================================================================
 
-import os
-from custom_exceptions import (
-    InvalidCharacterClassError,
-    CharacterNotFoundError,
-    SaveFileCorruptedError,
-    InvalidSaveDataError,
-    CharacterDeadError
-)
-
-# ============================================================================
-# CHARACTER MANAGEMENT FUNCTIONS
-# ============================================================================
-
 def create_character(name, character_class):
     """
     Create a new character with stats based on class
