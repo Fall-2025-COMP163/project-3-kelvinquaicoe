@@ -2,7 +2,7 @@
 COMP 163 - Project 3: Quest Chronicles
 Main Game Module - Integrated Inventory
 
-Name: [Your Name Here]
+Name: Kelvin Quaicoe
 
 AI Usage: Free Use (with explanation)
 This version fully integrates inventory, equipment, consumables, and shop with quest system.
