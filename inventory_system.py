@@ -68,27 +68,22 @@ def use_item(character, item_id, item_data):
 # -------------------------
 
 def equip_item(character, item_id, item_data, item_data_dict, slot):
-    """Generic equip function for 'weapon' or 'armor'"""
     if item_id not in character['inventory']:
         raise ItemNotFoundError(f"Item '{item_id}' not found in inventory.")
     if item_data['type'] != slot:
         raise InvalidItemTypeError(f"Item '{item_id}' is not a {slot}.")
-
     equipped_slot = f"equipped_{slot}"
-    # Unequip old item if exists
     if character.get(equipped_slot):
         old_id = character[equipped_slot]
         old_data = item_data_dict[old_id]
         stat_name, value = parse_item_effect(old_data['effect'])
         apply_stat_effect(character, stat_name, -value)
         add_item_to_inventory(character, old_id)
-
-    # Equip new item
     stat_name, value = parse_item_effect(item_data['effect'])
     apply_stat_effect(character, stat_name, value)
     character[equipped_slot] = item_id
     remove_item_from_inventory(character, item_id)
-    return f"Equipped {item_data['name']}, {stat_name} increased by {value}."
+    return True
 
 def unequip_item(character, item_data_dict, slot):
     equipped_slot = f"equipped_{slot}"
@@ -136,7 +131,6 @@ def apply_stat_effect(character, stat_name, value):
         character[stat_name] = 0
     character[stat_name] += value
     if stat_name == 'health':
-        # Clamp health between 0 and max_health
         character['health'] = min(max(character['health'], 0), character.get('max_health', character['health']))
 
 def display_inventory(character, item_data_dict):
@@ -146,30 +140,5 @@ def display_inventory(character, item_data_dict):
         item_name = item_data_dict[item_id]['name'] if item_id in item_data_dict else "Unknown"
         item_type = item_data_dict[item_id]['type'] if item_id in item_data_dict else "Unknown"
         print(f"- {item_name} (Type: {item_type}) x{count}")
-
-# -------------------------
-# TESTING
-# -------------------------
-
-if __name__ == "__main__":
-    print("=== INVENTORY SYSTEM TEST ===")
-    
-    test_char = {'inventory': [], 'gold': 100, 'health': 80, 'max_health': 80}
-    
-    # Add item
-    try:
-        add_item_to_inventory(test_char, "health_potion")
-        print(f"Inventory: {test_char['inventory']}")
-    except InventoryFullError:
-        print("Inventory is full!")
-
-    # Use item
-    test_item = {'item_id': 'health_potion', 'type': 'consumable', 'effect': 'health:20'}
-    try:
-        result = use_item(test_char, "health_potion", test_item)
-        print(result)
-        print(f"Health after use: {test_char['health']}")
-    except ItemNotFoundError:
-        print("Item not found")
 
 
