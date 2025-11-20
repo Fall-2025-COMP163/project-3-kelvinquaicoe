@@ -85,6 +85,12 @@ def equip_item(character, item_id, item_data, item_data_dict, slot):
     remove_item_from_inventory(character, item_id)
     return True
 
+def equip_weapon(character, item_id, item_data, item_data_dict):
+    return equip_item(character, item_id, item_data, item_data_dict, slot='weapon')
+
+def equip_armor(character, item_id, item_data, item_data_dict):
+    return equip_item(character, item_id, item_data, item_data_dict, slot='armor')
+
 def unequip_item(character, item_data_dict, slot):
     equipped_slot = f"equipped_{slot}"
     if not character.get(equipped_slot):
