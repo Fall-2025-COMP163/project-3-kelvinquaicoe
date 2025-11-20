@@ -1,12 +1,6 @@
 """
 COMP 163 - Project 3: Quest Chronicles
 Inventory System Module - Fully Integrated Version
-
-Name: [Your Name Here]
-
-AI Usage: Free Use (with explanation)
-This module was updated to fully integrate equipment, consumables, and shop functionality
-with the quest system and main game menu.
 """
 
 from custom_exceptions import (
@@ -69,59 +63,55 @@ def use_item(character, item_id, item_data):
 # EQUIPMENT
 # -------------------------
 
-def equip_weapon(character, item_id, item_data_dict):
-    """Equip a weapon and apply its effects"""
+def equip_weapon(character, item_id, item_data):
     if item_id not in character.get('inventory', []):
         raise ItemNotFoundError(f"Weapon '{item_id}' not in inventory.")
-    item_data = item_data_dict[item_id]
     if item_data.get('type') != 'weapon':
         raise InvalidItemTypeError(f"Item '{item_id}' is not a weapon.")
 
     # Unequip old weapon
     old_weapon_id = character.get('equipped_weapon')
     if old_weapon_id:
-        old_weapon_data = item_data_dict[old_weapon_id]
-        for stat, value in parse_effect_string(old_weapon_data.get('effect', '')).items():
+        old_weapon_data = character['inventory_data'].get(old_weapon_id, {}) if 'inventory_data' in character else {}
+        for stat, value in parse_effect_string(old_weapon_data.get('effect','')).items():
             apply_stat_effect(character, stat, -value)
         add_item_to_inventory(character, old_weapon_id)
 
     # Equip new weapon
     character['equipped_weapon'] = item_id
-    for stat, value in parse_effect_string(item_data.get('effect', '')).items():
+    for stat, value in parse_effect_string(item_data.get('effect','')).items():
         apply_stat_effect(character, stat, value)
     remove_item_from_inventory(character, item_id)
     return True
 
-def equip_armor(character, item_id, item_data_dict):
-    """Equip armor and apply its effects"""
+def equip_armor(character, item_id, item_data):
     if item_id not in character.get('inventory', []):
         raise ItemNotFoundError(f"Armor '{item_id}' not in inventory.")
-    item_data = item_data_dict[item_id]
     if item_data.get('type') != 'armor':
         raise InvalidItemTypeError(f"Item '{item_id}' is not armor.")
 
     # Unequip old armor
     old_armor_id = character.get('equipped_armor')
     if old_armor_id:
-        old_armor_data = item_data_dict[old_armor_id]
-        for stat, value in parse_effect_string(old_armor_data.get('effect', '')).items():
+        old_armor_data = character['inventory_data'].get(old_armor_id, {}) if 'inventory_data' in character else {}
+        for stat, value in parse_effect_string(old_armor_data.get('effect','')).items():
             apply_stat_effect(character, stat, -value)
         add_item_to_inventory(character, old_armor_id)
 
     # Equip new armor
     character['equipped_armor'] = item_id
-    for stat, value in parse_effect_string(item_data.get('effect', '')).items():
+    for stat, value in parse_effect_string(item_data.get('effect','')).items():
         apply_stat_effect(character, stat, value)
     remove_item_from_inventory(character, item_id)
     return True
 
-def unequip_item(character, item_data_dict, slot):
+def unequip_item(character, item_data, slot):
+    """Unequip weapon or armor"""
     equipped_slot = f"equipped_{slot}"
     item_id = character.get(equipped_slot)
     if not item_id:
         return None
-    item_data = item_data_dict[item_id]
-    for stat, value in parse_effect_string(item_data['effect']).items():
+    for stat, value in parse_effect_string(item_data.get('effect','')).items():
         apply_stat_effect(character, stat, -value)
     add_item_to_inventory(character, item_id)
     character[equipped_slot] = None
