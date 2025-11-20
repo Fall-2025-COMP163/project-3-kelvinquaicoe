@@ -81,7 +81,7 @@ def create_character(name, character_class):
         strength = 10
         magic = 15
 
-    # --- return character dictionary ---
+    #return character dictionary
     return {
         "name": name,
         "class": character_class,
