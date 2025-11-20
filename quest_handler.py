@@ -88,9 +88,10 @@ def is_quest_active(character, quest_id):
 def can_accept_quest(character, quest_id, quest_data_dict):
     if quest_id not in quest_data_dict:
         return False
-    q = quest_data_dict[quest_id]
-    prereq = q['prerequisite']
-    return character['level'] >= q['required_level'] and prereq in character['completed_quests'] or prereq=="NONE" and quest_id not in character['completed_quests'] and quest_id not in character['active_quests']
+    quest = quest_data_dict[quest_id]
+    prereq_done = quest['prerequisite'] == "NONE" or quest['prerequisite'] in character['completed_quests']
+    not_taken = quest_id not in character['completed_quests'] and quest_id not in character['active_quests']
+    return character['level'] >= quest['required_level'] and prereq_done and not_taken
 
 # -------------------------
 # QUEST STATISTICS
@@ -114,3 +115,36 @@ def validate_quest_prerequisites(quest_data_dict):
         if prereq != "NONE" and prereq not in quest_data_dict:
             raise QuestNotFoundError(f"Quest '{qid}' has invalid prerequisite '{prereq}'")
     return True
+
+# -------------------------
+# MAIN TEST BLOCK
+# -------------------------
+
+if __name__ == "__main__":
+    print("=== QUEST HANDLER MODULE TEST ===")
+    test_char = {
+        'level': 1,
+        'active_quests': [],
+        'completed_quests': [],
+        'experience': 0,
+        'gold': 100,
+        'inventory': []
+    }
+    test_item_data = {'healing_potion': {'name': 'Healing Potion', 'type': 'consumable', 'effect': 'health:20'}}
+    test_quests = {
+        'first_quest': {
+            'quest_id': 'first_quest',
+            'title': 'First Steps',
+            'description': 'Complete your first quest',
+            'reward_xp': 50,
+            'reward_gold': 25,
+            'required_level': 1,
+            'prerequisite': 'NONE',
+            'reward_items': ['healing_potion']
+        }
+    }
+
+    accept_quest(test_char, 'first_quest', test_quests)
+    print("Quest accepted!")
+    rewards = complete_quest(test_char, 'first_quest', test_quests, test_item_data)
+    print(f"Quest completed! Rewards: {rewards}")
