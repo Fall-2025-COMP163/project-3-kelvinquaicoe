@@ -125,4 +125,11 @@ class InvalidSaveDataError(GameError):
 class InsufficientGoldError(InventoryError):
     """Raised when player doesn't have enough gold to perform an action"""
     pass
+class QuestAlreadyAcceptedError(QuestError):
+    """Raised when trying to accept a quest already active"""
+    pass
+
+class QuestNotAcceptedError(QuestError):
+    """Raised when trying to abandon or complete a quest that is not active"""
+    pass
 
