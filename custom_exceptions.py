@@ -122,4 +122,7 @@ class SaveFileCorruptedError(GameError):
 class InvalidSaveDataError(GameError):
     """Raised when save file contains invalid data"""
     pass
+class InsufficientGoldError(CharacterError):
+    """Raised when player doesn't have enough gold to perform an action"""
+    pass
 
