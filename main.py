@@ -6,6 +6,10 @@ Name: Kelvin Quaicoe
 
 AI Usage: Free Use (with explanation)
 This version fully integrates inventory, equipment, consumables, and shop with quest system.
+
+AI assistance was used to help identify bugs when the program failed test cases. 
+It provided suggestions for fixing errors and clarifying logic issues. 
+AI also served as a reference for correct Python syntax and best practices, such as using x.split() instead of split(x), proper exception handling, and other standard coding patterns. AI was used only as guidance and troubleshooting support.
 """
 
 # Import all our custom modules
