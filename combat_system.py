@@ -2,7 +2,7 @@
 COMP 163 - Project 3: Quest Chronicles
 Combat System Module - Starter Code
 
-Name: [Your Name Here]
+Name: Kelvin Quaicoe
 
 AI assistance was used during development only as a debugging and clarification tool. 
 It helped identify minor issues such as typos, indentation errors, and small syntax mistakes that caused functions in the combat system to behave incorrectly or fail test cases. 
