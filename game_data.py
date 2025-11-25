@@ -2,7 +2,7 @@
 COMP 163 - Project 3: Quest Chronicles
 Game Data Module - Starter Code
 
-Name: [Your Name Here]
+Name: Kelvin Quaicoe
 
 AI Usage: AI was used only to find small bugs in this program, such as typos, indentation issues, and minor syntax mistakes.
 
