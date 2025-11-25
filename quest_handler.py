@@ -5,6 +5,7 @@ Quest Handler Module - Enhanced Version
 Name: [Your Name Here]
 
 AI Usage: [Document any AI assistance used]
+AI was used to help find bugs such as typos, incorrect syntax, and indentation mistakes.
 
 This module handles quest management, dependencies, completion, and item rewards.
 """
