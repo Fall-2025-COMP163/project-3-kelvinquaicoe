@@ -4,7 +4,7 @@ Game Data Module - Starter Code
 
 Name: [Your Name Here]
 
-AI Usage: [Document any AI assistance used]
+AI Usage: AI was used only to find small bugs in this program, such as typos, indentation issues, and minor syntax mistakes.
 
 This module handles loading and validating game data from text files.
 """
