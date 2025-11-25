@@ -149,3 +149,123 @@ Test files are provided for your learning but are protected. Modifying test file
 - Academic integrity investigation
 
 You can view tests to understand requirements, but any modifications will be automatically detected.
+
+
+
+
+
+
+  ### Read Me
+
+  ##Project Overview
+
+Quest Chronicles is a modular text-based RPG built in Python. Players create and manage characters, complete quests, battle enemies, collect and equip items, and explore a dynamic game world. The project emphasizes modular design, exception handling, and integration of multiple systems including:
+
+Character management
+
+Inventory and equipment system
+
+Quest system with prerequisites and rewards
+
+Combat system
+
+Save/load functionality
+
+  ##Features
+
+Create a character (Warrior, Mage, or Rogue)
+
+Leveling system with XP, health, strength, and magic stats
+
+Integrated inventory with consumables, weapons, and armor
+
+Shop for buying and selling items
+
+Quest system with prerequisites, XP, gold, and item rewards
+
+Combat encounters with enemies
+
+Save/load game progress
+
+Robust error handling using custom exceptions
+
+
+ ## How to Run
+1. Ensure **Python 3.10+** is installed.  
+2. Place all project files in a single directory with the following structure:
+
+QuestChronicles/
+main_game.py
+character_manager.py
+inventory_system.py
+quest_handler.py
+combat_system.py
+game_data.py
+custom_exceptions.py
+data/
+save_games/
+quests.json
+items.json
+
+3. Open a terminal or command prompt in the project directory.  
+4. Run the main game module:
+
+```bash
+python main_game.py
+
+5.Follow the on-screen prompts to:
+
+Create a new character or load an existing one.
+
+Explore, battle enemies, complete quests, and manage your inventory.
+
+Save your progress and quit using the game menu.
+
+  ###Module	Description
+character_manager.py - Handles character creation, stats, health, experience, gold, save/load, and revival.
+inventory_system.py -	Manages inventory, item usage, equipping weapons/armor, shop system, and stat effects.
+quest_handler.py -	Handles quests, prerequisites, completion, rewards, and quest retrieval.
+combat_system.py -	Manages battles, enemy generation, and victory/defeat handling.
+game_data.py -	Loads quest and item data from JSON or other sources.
+custom_exceptions.py -	Defines all project-specific exceptions for error handling.
+main_game.py -	Main game loop, menus, user interactions, and game orchestration.
+
+  ###Gameplay
+
+#Main Menu:
+
+New Game: Create a new character.
+
+Load Game: Load an existing character.
+
+Exit: Quit the game.
+
+#Game Menu:
+
+View Character Stats: See level, health, gold, equipped items, and active quests.
+
+View Inventory: Use items or equip weapons/armor.
+
+Quest Menu: Accept, abandon, or complete quests.
+
+Explore: Fight random enemies to earn XP and gold.
+
+Shop: Buy or sell items.
+
+Save and Quit: Save progress and return to main menu.
+
+#Quests:
+
+Some quests require completion of previous quests (prerequisites).
+
+Rewards include XP, gold, and items.
+
+Quest status tracked in active_quests and completed_quests.
+
+#Combat:
+
+Characters fight enemies according to level.
+
+Victory awards XP and gold.
+
+Defeat triggers revival options or game over.
