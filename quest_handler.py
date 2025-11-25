@@ -96,7 +96,7 @@ def abandon_quest(character, quest_id):
 # -------------------------
 
 def get_active_quests(character, quest_data_dict):
-     """Return a list of quest dictionaries for all active quests."""
+    """Return a list of quest dictionaries for all active quests."""
     return [quest_data_dict[q] for q in character['active_quests'] if q in quest_data_dict]
 
 def get_completed_quests(character, quest_data_dict):
