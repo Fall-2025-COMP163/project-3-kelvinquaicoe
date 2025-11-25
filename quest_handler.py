@@ -2,7 +2,7 @@
 COMP 163 - Project 3: Quest Chronicles
 Quest Handler Module - Enhanced Version
 
-Name: [Your Name Here]
+Name: Kelvin Quaicoe
 
 AI Usage: [Document any AI assistance used]
 AI was used to help find bugs such as typos, incorrect syntax, and indentation mistakes.
