@@ -210,7 +210,7 @@ items.json
 3. Open a terminal or command prompt in the project directory.  
 4. Run the main game module:
 
-```bash
+bash
 python main_game.py
 
 5.Follow the on-screen prompts to:
