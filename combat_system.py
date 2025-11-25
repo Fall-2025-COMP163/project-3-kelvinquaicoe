@@ -4,7 +4,9 @@ Combat System Module - Starter Code
 
 Name: [Your Name Here]
 
-AI Usage: [Document any AI assistance used]
+AI assistance was used during development only as a debugging and clarification tool. 
+It helped identify minor issues such as typos, indentation errors, and small syntax mistakes that caused functions in the combat system to behave incorrectly or fail test cases. 
+AI was also used to clarify Python behavior when needed and assisted in understanding error messages to ensure the program ran as intended.
 
 Handles combat mechanics
 """
