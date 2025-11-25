@@ -221,7 +221,7 @@ Explore, battle enemies, complete quests, and manage your inventory.
 
 Save your progress and quit using the game menu.
 
-  ###Module	Description
+###Module	Description
 character_manager.py - Handles character creation, stats, health, experience, gold, save/load, and revival.
 inventory_system.py -	Manages inventory, item usage, equipping weapons/armor, shop system, and stat effects.
 quest_handler.py -	Handles quests, prerequisites, completion, rewards, and quest retrieval.
@@ -230,9 +230,9 @@ game_data.py -	Loads quest and item data from JSON or other sources.
 custom_exceptions.py -	Defines all project-specific exceptions for error handling.
 main_game.py -	Main game loop, menus, user interactions, and game orchestration.
 
-  ###Gameplay
+###Gameplay
 
-#Main Menu:
+###Main Menu:
 
 New Game: Create a new character.
 
@@ -240,7 +240,7 @@ Load Game: Load an existing character.
 
 Exit: Quit the game.
 
-#Game Menu:
+##Game Menu:
 
 View Character Stats: See level, health, gold, equipped items, and active quests.
 
@@ -254,7 +254,7 @@ Shop: Buy or sell items.
 
 Save and Quit: Save progress and return to main menu.
 
-#Quests:
+##Quests:
 
 Some quests require completion of previous quests (prerequisites).
 
@@ -262,7 +262,7 @@ Rewards include XP, gold, and items.
 
 Quest status tracked in active_quests and completed_quests.
 
-#Combat:
+##Combat:
 
 Characters fight enemies according to level.
 
